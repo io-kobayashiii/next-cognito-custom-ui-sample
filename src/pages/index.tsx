@@ -1,10 +1,39 @@
 import Head from 'next/head';
 import Image from 'next/image';
 import { Inter } from '@next/font/google';
+import { useMemo } from 'react';
+import * as Yup from 'yup';
+import { yupResolver } from '@hookform/resolvers/yup';
+import { SubmitHandler, useForm, FieldValues } from 'react-hook-form';
+import { Box, TextField, Button } from '@mui/material';
 
 const inter = Inter({ subsets: ['latin'] });
 
 export default function Home() {
+  const schema = useMemo(
+    () =>
+      Yup.object({
+        email: Yup.string()
+          .email('メールアドレスの形式が正しくありません')
+          .required('この項目は必須です'),
+        password: Yup.string().required('この項目は必須です'),
+        name: Yup.string().required('この項目は必須です'),
+      }),
+    []
+  );
+
+  const {
+    register,
+    handleSubmit,
+    formState: { errors },
+  } = useForm({
+    resolver: yupResolver(schema),
+  });
+
+  const onCreateButtonClick: SubmitHandler<FieldValues> = async (formInput) => {
+    console.log('onCreateButtonClick / formInput:', formInput);
+  };
+
   return (
     <>
       <Head>
@@ -15,10 +44,56 @@ export default function Home() {
       </Head>
       <main
         className={
-          'min-h-100vh bg-gray-900 flex justify-center items-center p-30'
+          'min-h-100vh bg-gray-100 flex justify-center items-center p-30'
         }
       >
-        <div className={`max-w-xl w-100p h-300 bg-gray-800 rounded-12`}></div>
+        <div
+          className={`max-w-sm w-100p bg-gray-200 rounded-12 p-30 shadow-lg`}
+        >
+          <h2 className={`text-center text-24`}>Sign In</h2>
+          <Box
+            id={'create-user-form'}
+            component={'form'}
+            onSubmit={handleSubmit(onCreateButtonClick)}
+          >
+            <TextField
+              label="メールアドレス *"
+              variant="standard"
+              className={'w-100p mt-30'}
+              error={'email' in errors}
+              helperText={errors.email?.message as string}
+              {...register('email')}
+            />
+            <TextField
+              label="パスワード *"
+              variant="standard"
+              className={'w-100p mt-30'}
+              type={'password'}
+              autoComplete={'new-password'}
+              error={'password' in errors}
+              helperText={errors.password?.message as string}
+              {...register('password')}
+            />
+            <TextField
+              label="表示名 *"
+              variant="standard"
+              className={'w-100p mt-30'}
+              error={'name' in errors}
+              helperText={errors.name?.message as string}
+              {...register('name')}
+            />
+          </Box>
+          <div className={'flex justify-end mt-30'}>
+            <Button
+              variant={'contained'}
+              type={'submit'}
+              form={'create-user-form'}
+              className={'bg-orange-600 hover:bg-orange-700'}
+            >
+              Sign In
+            </Button>
+          </div>
+        </div>
       </main>
     </>
   );
