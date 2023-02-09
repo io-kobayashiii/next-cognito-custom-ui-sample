@@ -5,11 +5,14 @@ import * as Yup from 'yup';
 import { yupResolver } from '@hookform/resolvers/yup';
 import { SubmitHandler, useForm, FieldValues } from 'react-hook-form';
 import { Box, TextField, Button, Link } from '@mui/material';
-import * as Auth from '../features/auth';
+import * as Auth from '../../features/auth';
+import { useRouter } from 'next/router';
 
 const inter = Inter({ subsets: ['latin'] });
 
-export const Index = () => {
+export const SignUp = () => {
+  const router = useRouter();
+
   const schema = useMemo(
     () =>
       Yup.object({
@@ -17,6 +20,9 @@ export const Index = () => {
           .email('メールアドレスの形式が正しくありません')
           .required('この項目は必須です'),
         password: Yup.string().required('この項目は必須です'),
+        passwordConfirmation: Yup.string()
+          .required('この項目は必須です')
+          .oneOf([Yup.ref('password')], 'パスワードが一致しません。'),
       }),
     []
   );
@@ -29,15 +35,18 @@ export const Index = () => {
     resolver: yupResolver(schema),
   });
 
-  const onSignInButtonClick: SubmitHandler<FieldValues> = async (formInput) => {
-    console.log('onSignInButtonClick / formInput:', formInput);
-    Auth.signIn(formInput);
+  const onSignUpButtonClick: SubmitHandler<FieldValues> = (formInput) => {
+    console.log('onSignUpButtonClick / formInput:', formInput);
+    Auth.signUp(formInput);
+    router.push(
+      `/verify?verifyingEmail=${encodeURIComponent(formInput.email)}`
+    );
   };
 
   return (
     <>
       <Head>
-        <title>Sign In | Next + Cognito Custom UI</title>
+        <title>Sign Up | Next + Cognito Custom UI</title>
       </Head>
       <main
         className={
@@ -45,11 +54,11 @@ export const Index = () => {
         }
       >
         <div className={`max-w-sm w-100p bg-white rounded-4 p-50 shadow-lg`}>
-          <h2 className={`text-center text-24`}>Sign In</h2>
+          <h2 className={`text-center text-24`}>Sign Up</h2>
           <Box
-            id={'sign-in-form'}
+            id={'sign-up-form'}
             component={'form'}
-            onSubmit={handleSubmit(onSignInButtonClick)}
+            onSubmit={handleSubmit(onSignUpButtonClick)}
           >
             <TextField
               label="メールアドレス *"
@@ -69,15 +78,25 @@ export const Index = () => {
               helperText={errors.password?.message as string}
               {...register('password')}
             />
+            <TextField
+              label="パスワード確認 *"
+              variant="outlined"
+              className={'w-100p mt-30'}
+              type={'password'}
+              autoComplete={'new-password'}
+              error={'passwordConfirmation' in errors}
+              helperText={errors.passwordConfirmation?.message as string}
+              {...register('passwordConfirmation')}
+            />
           </Box>
           <div className={'mt-30'}>
             <Button
               variant={'contained'}
               type={'submit'}
-              form={'sign-in-form'}
-              className={'w-100p bg-orange-600 hover:bg-orange-700'}
+              form={'sign-up-form'}
+              className={'w-100p bg-blue-400 hover:bg-blue-500'}
             >
-              Sign In
+              Sign Up
             </Button>
           </div>
           <div className={`mt-30 flex items-center`}>
@@ -86,13 +105,13 @@ export const Index = () => {
             <div className={`flex-grow border-t border-gray-300`}></div>
           </div>
           <div className={'mt-30'}>
-            <Link href={'/signup'} className={`no-underline`}>
+            <Link href={'/'} className={`no-underline`}>
               <Button
                 variant={'contained'}
                 type={'button'}
                 className={'w-100p bg-gray-600 hover:bg-gray-700'}
               >
-                Go To Sign Up Page
+                Back To Top Page
               </Button>
             </Link>
           </div>
@@ -102,4 +121,4 @@ export const Index = () => {
   );
 };
 
-export default Index;
+export default SignUp;

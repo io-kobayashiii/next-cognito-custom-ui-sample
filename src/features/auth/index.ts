@@ -12,6 +12,14 @@ export const signUp = async ({ email, password }: Types.SignUpFieldValues) => {
   }
 };
 
+export const verifyEmail = async ({ email, code }: Types.SignUpFieldValues) => {
+  try {
+    await Auth.confirmSignUp(email, String(code));
+  } catch (error) {
+    console.log(error);
+  }
+};
+
 export const signIn = async ({ email, password }: Types.SignUpFieldValues) => {
   try {
     const user = await Auth.signIn({
