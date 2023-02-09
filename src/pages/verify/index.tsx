@@ -100,7 +100,7 @@ export const Verify = () => {
                 <div className={`flex-grow border-t border-gray-300`}></div>
               </div>
               <div className={`mt-30 flex justify-between`}>
-                <Link href={'/signup'} className={`no-underline`}>
+                <Link href={'/sign-up'} className={`no-underline`}>
                   <Button
                     variant={'contained'}
                     type={'button'}
