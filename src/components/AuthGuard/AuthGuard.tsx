@@ -1,7 +1,4 @@
-import {
-  InitializedStatus,
-  useAuthenticatedUserState,
-} from '@/store/global/authenticatedUser';
+import { useAuthenticatedUserState } from '@/store/global/authenticatedUser';
 import { CircularProgress } from '@mui/material';
 import { useRouter } from 'next/router';
 import { FC, useEffect } from 'react';
@@ -12,15 +9,13 @@ interface Props {
 
 export const AuthGuard: FC<Props> = ({ children }) => {
   const router = useRouter();
-  const { status, isAuthenticated } = useAuthenticatedUserState();
+  const { isInitialized, isAuthenticated } = useAuthenticatedUserState();
 
   useEffect(() => {
-    if (status === InitializedStatus.Complete && !isAuthenticated) {
-      router.push('/');
-    }
-  }, [isAuthenticated, router, status]);
+    if (isInitialized && !isAuthenticated) router.push('/');
+  }, [isAuthenticated, router, isInitialized]);
 
-  return status === InitializedStatus.Complete && isAuthenticated ? (
+  return isInitialized && isAuthenticated ? (
     <>{children}</>
   ) : (
     <>

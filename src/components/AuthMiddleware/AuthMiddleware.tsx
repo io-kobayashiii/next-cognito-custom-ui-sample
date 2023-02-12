@@ -1,8 +1,5 @@
 import { getCurrentAuthenticatedUser } from '@/features/auth';
-import {
-  InitializedStatus,
-  useAuthenticatedUserMutation,
-} from '@/store/global/authenticatedUser';
+import { useAuthenticatedUserMutation } from '@/store/global/authenticatedUser';
 import { FC } from 'react';
 
 interface Props {
@@ -16,13 +13,13 @@ export const AuthMiddleware: FC<Props> = ({ children }) => {
     if (currentAuthenticatedUser) {
       const { email, emailVerified } = currentAuthenticatedUser.attributes;
       setAuthenticatedUser({
-        status: InitializedStatus.Complete,
+        isInitialized: true,
         isAuthenticated: true,
         email: email!,
         emailVerified,
       });
     } else {
-      setInitializedStatus(InitializedStatus.Complete);
+      setInitializedStatus(true);
     }
   });
   return <>{children}</>;

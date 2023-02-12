@@ -1,13 +1,8 @@
 import { useCallback } from 'react';
 import { atom, useRecoilValue, useSetRecoilState } from 'recoil';
 
-export enum InitializedStatus {
-  Uninitialized = 'Uninitialized',
-  Complete = 'Complete',
-}
-
 type AuthenticatedUserState = {
-  status: InitializedStatus;
+  isInitialized: boolean;
   isAuthenticated: boolean;
   email: string;
   emailVerified: boolean;
@@ -16,7 +11,7 @@ type AuthenticatedUserState = {
 const authenticatedUserRecoilState = atom<AuthenticatedUserState>({
   key: 'authenticatedUserState',
   default: {
-    status: InitializedStatus.Uninitialized,
+    isInitialized: false,
     isAuthenticated: false,
     email: '',
     emailVerified: false,
@@ -30,16 +25,18 @@ export const useAuthenticatedUserState = () => {
 export const useAuthenticatedUserMutation = () => {
   const setState = useSetRecoilState(authenticatedUserRecoilState);
 
-  const setAuthenticatedUser = useCallback(
-    (newState: AuthenticatedUserState) => setState(newState),
-    [setState]
-  );
+  const setAuthenticatedUser = (newState: AuthenticatedUserState) => {
+    setState((state) => ({
+      ...state,
+      ...newState,
+    }));
+  };
 
   const setInitializedStatus = useCallback(
-    (newInitializedStatus: InitializedStatus) =>
+    (newIsInitialized: boolean) =>
       setState((state) => ({
         ...state,
-        status: newInitializedStatus,
+        status: newIsInitialized,
       })),
     [setState]
   );
