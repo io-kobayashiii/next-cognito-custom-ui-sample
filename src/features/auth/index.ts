@@ -3,10 +3,11 @@ import * as Types from './auth.types';
 
 export const getCurrentAuthenticatedUser = async () => {
   try {
-    const authenticatedUser: Types.CognitoUserAmplify =
+    const authenticatedUser: Types.CognitoUser =
       await Auth.currentAuthenticatedUser();
     return authenticatedUser;
   } catch (error) {
+    console.log(error);
     return null;
   }
 };
@@ -32,7 +33,7 @@ export const verifyEmail = async ({ email, code }: Types.SignUpFieldValues) => {
 
 export const signIn = async ({ email, password }: Types.SignUpFieldValues) => {
   try {
-    const user: Types.CognitoUserAmplify = await Auth.signIn({
+    const user: Types.CognitoUser = await Auth.signIn({
       username: email,
       password,
     });

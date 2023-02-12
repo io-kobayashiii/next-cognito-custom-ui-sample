@@ -2,12 +2,12 @@ export type SignUpFieldValues = {
   [x: string]: any;
 };
 
-export interface CognitoAttributes {
+export interface CognitoUserAttributes {
   email: string | null;
   emailVerified: boolean;
 }
 
-export interface CognitoUserAmplify {
+export interface CognitoUser {
   username: string | null;
-  attributes: CognitoAttributes;
+  attributes: CognitoUserAttributes;
 }

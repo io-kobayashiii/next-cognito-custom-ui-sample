@@ -6,10 +6,7 @@ import { yupResolver } from '@hookform/resolvers/yup';
 import { SubmitHandler, useForm, FieldValues } from 'react-hook-form';
 import { Box, TextField, Button, Link } from '@mui/material';
 import * as Auth from '../features/auth';
-import {
-  InitializedStatus,
-  useAuthenticatedUserMutation,
-} from '@/store/global/authenticatedUser';
+import { useAuthenticatedUserMutation } from '@/store/global/authenticatedUser';
 import { useRouter } from 'next/router';
 
 const inter = Inter({ subsets: ['latin'] });
@@ -41,7 +38,7 @@ export const Index = () => {
     const user = await Auth.signIn(formInput);
     if (user) {
       setAuthenticatedUser({
-        status: InitializedStatus.Complete,
+        isInitialized: true,
         isAuthenticated: true,
         email: user.attributes.email!,
         emailVerified: user.attributes.emailVerified,
