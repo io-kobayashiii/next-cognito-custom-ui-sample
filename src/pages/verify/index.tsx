@@ -17,13 +17,10 @@ export const Verify = () => {
     () =>
       Yup.object({
         email: Yup.string(),
-        code: Yup.number()
-          .required('この項目は必須です')
-          .typeError('半角数字を入力してください。'),
+        code: Yup.string().required('この項目は必須です'),
       }),
     []
   );
-
   const {
     register,
     setValue,
@@ -41,9 +38,14 @@ export const Verify = () => {
     }
   }, [router, setValue]);
 
-  const onVerifyEmailButtonClick: SubmitHandler<FieldValues> = (formInput) => {
-    console.log('onVerifyEmailButtonClick / formInput:', formInput);
-    Auth.verifyEmail(formInput);
+  const onVerifyEmailButtonClick: SubmitHandler<FieldValues> = async (
+    formInput
+  ) => {
+    const response = await Auth.verifyEmail(formInput);
+    if (response === 'SUCCESS') {
+      alert('Email verification is succeeded.\nPlease sign in.');
+      router.push('/');
+    }
   };
 
   return (
@@ -77,7 +79,6 @@ export const Verify = () => {
                   label="認証コード *"
                   variant="outlined"
                   className={'w-100p mt-30'}
-                  type={'tel'}
                   autoComplete={'new-password'}
                   error={'code' in errors}
                   helperText={errors.code?.message as string}
