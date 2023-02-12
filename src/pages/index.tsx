@@ -6,10 +6,18 @@ import { yupResolver } from '@hookform/resolvers/yup';
 import { SubmitHandler, useForm, FieldValues } from 'react-hook-form';
 import { Box, TextField, Button, Link } from '@mui/material';
 import * as Auth from '../features/auth';
+import {
+  InitializedStatus,
+  useAuthenticatedUserMutation,
+} from '@/store/global/authenticatedUser';
+import { useRouter } from 'next/router';
 
 const inter = Inter({ subsets: ['latin'] });
 
 export const Index = () => {
+  const router = useRouter();
+  const { setAuthenticatedUser } = useAuthenticatedUserMutation();
+
   const schema = useMemo(
     () =>
       Yup.object({
@@ -30,8 +38,18 @@ export const Index = () => {
   });
 
   const onSignInButtonClick: SubmitHandler<FieldValues> = async (formInput) => {
-    console.log('onSignInButtonClick / formInput:', formInput);
-    Auth.signIn(formInput);
+    const user = await Auth.signIn(formInput);
+    if (user) {
+      setAuthenticatedUser({
+        status: InitializedStatus.Complete,
+        isAuthenticated: true,
+        email: user.attributes.email!,
+        emailVerified: user.attributes.emailVerified,
+      });
+      router.push('/private');
+    } else {
+      alert('Email or password is incorrect.');
+    }
   };
 
   return (

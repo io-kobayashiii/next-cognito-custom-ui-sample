@@ -1,6 +1,16 @@
 import { Auth } from '@aws-amplify/auth';
 import * as Types from './auth.types';
 
+export const getCurrentAuthenticatedUser = async () => {
+  try {
+    const authenticatedUser: Types.CognitoUserAmplify =
+      await Auth.currentAuthenticatedUser();
+    return authenticatedUser;
+  } catch (error) {
+    return null;
+  }
+};
+
 export const signUp = async ({ email, password }: Types.SignUpFieldValues) => {
   try {
     await Auth.signUp({
@@ -14,7 +24,7 @@ export const signUp = async ({ email, password }: Types.SignUpFieldValues) => {
 
 export const verifyEmail = async ({ email, code }: Types.SignUpFieldValues) => {
   try {
-    await Auth.confirmSignUp(email, String(code));
+    return await Auth.confirmSignUp(email, String(code));
   } catch (error) {
     console.log(error);
   }
@@ -22,13 +32,15 @@ export const verifyEmail = async ({ email, code }: Types.SignUpFieldValues) => {
 
 export const signIn = async ({ email, password }: Types.SignUpFieldValues) => {
   try {
-    const user = await Auth.signIn({
+    const user: Types.CognitoUserAmplify = await Auth.signIn({
       username: email,
       password,
     });
     console.log(user);
+    return user;
   } catch (error) {
     console.log(error);
+    return null;
   }
 };
 
@@ -42,4 +54,6 @@ export const requestPasswordReset = async ({
   }
 };
 
-export const signOut = Auth.signOut;
+export const signOut = async () => {
+  await Auth.signOut();
+};

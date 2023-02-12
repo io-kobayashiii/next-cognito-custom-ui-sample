@@ -36,7 +36,6 @@ export const SignUp = () => {
   });
 
   const onSignUpButtonClick: SubmitHandler<FieldValues> = (formInput) => {
-    console.log('onSignUpButtonClick / formInput:', formInput);
     Auth.signUp(formInput);
     router.push(
       `/verify?verifyingEmail=${encodeURIComponent(formInput.email)}`
