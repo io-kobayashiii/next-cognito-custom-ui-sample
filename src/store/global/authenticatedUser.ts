@@ -32,14 +32,14 @@ export const useAuthenticatedUserMutation = () => {
     }));
   };
 
-  const setInitializedStatus = useCallback(
+  const setIsInitialized = useCallback(
     (newIsInitialized: boolean) =>
       setState((state) => ({
         ...state,
-        status: newIsInitialized,
+        isInitialized: newIsInitialized,
       })),
     [setState]
   );
 
-  return { setAuthenticatedUser, setInitializedStatus };
+  return { setAuthenticatedUser, setIsInitialized };
 };

@@ -7,7 +7,7 @@ interface Props {
 }
 
 export const AuthMiddleware: FC<Props> = ({ children }) => {
-  const { setAuthenticatedUser, setInitializedStatus } =
+  const { setAuthenticatedUser, setIsInitialized } =
     useAuthenticatedUserMutation();
   getCurrentAuthenticatedUser().then((currentAuthenticatedUser) => {
     if (currentAuthenticatedUser) {
@@ -15,11 +15,11 @@ export const AuthMiddleware: FC<Props> = ({ children }) => {
       setAuthenticatedUser({
         isInitialized: true,
         isAuthenticated: true,
-        email: email!,
+        email: email,
         emailVerified,
       });
     } else {
-      setInitializedStatus(true);
+      setIsInitialized(true);
     }
   });
   return <>{children}</>;

@@ -40,8 +40,8 @@ export const Index = () => {
       setAuthenticatedUser({
         isInitialized: true,
         isAuthenticated: true,
-        email: user.attributes.email!,
-        emailVerified: user.attributes.emailVerified,
+        email: user?.attributes?.email ?? '',
+        emailVerified: user?.attributes?.emailVerified ?? false,
       });
       router.push('/private');
     } else {
