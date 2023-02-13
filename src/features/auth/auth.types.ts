@@ -3,7 +3,7 @@ export type SignUpFieldValues = {
 };
 
 export interface CognitoUserAttributes {
-  email: string | null;
+  email: string;
   emailVerified: boolean;
 }
 

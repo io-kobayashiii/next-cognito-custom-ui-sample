@@ -35,8 +35,8 @@ export const SignUp = () => {
     resolver: yupResolver(schema),
   });
 
-  const onSignUpButtonClick: SubmitHandler<FieldValues> = (formInput) => {
-    Auth.signUp(formInput);
+  const onSignUpButtonClick: SubmitHandler<FieldValues> = async (formInput) => {
+    await Auth.signUp(formInput);
     router.push(
       `/verify?verifyingEmail=${encodeURIComponent(formInput.email)}`
     );
