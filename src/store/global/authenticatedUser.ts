@@ -22,24 +22,8 @@ export const useAuthenticatedUserState = () => {
   return useRecoilValue(authenticatedUserRecoilState);
 };
 
-export const useAuthenticatedUserMutation = () => {
+export const useAuthenticatedUserMutator = () => {
   const setState = useSetRecoilState(authenticatedUserRecoilState);
-
-  const setAuthenticatedUser = (newState: AuthenticatedUserState) => {
-    setState((state) => ({
-      ...state,
-      ...newState,
-    }));
-  };
-
-  const setIsInitialized = useCallback(
-    (newIsInitialized: boolean) =>
-      setState((state) => ({
-        ...state,
-        isInitialized: newIsInitialized,
-      })),
-    [setState]
-  );
-
-  return { setAuthenticatedUser, setIsInitialized };
+  const setAuthenticatedUser = useCallback(setState, [setState]);
+  return { setAuthenticatedUser };
 };

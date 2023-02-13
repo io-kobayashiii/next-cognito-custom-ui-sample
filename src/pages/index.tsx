@@ -6,14 +6,14 @@ import { yupResolver } from '@hookform/resolvers/yup';
 import { SubmitHandler, useForm, FieldValues } from 'react-hook-form';
 import { Box, TextField, Button, Link } from '@mui/material';
 import * as Auth from '../features/auth';
-import { useAuthenticatedUserMutation } from '@/store/global/authenticatedUser';
+import { useAuthenticatedUserMutator } from '@/store/global/authenticatedUser';
 import { useRouter } from 'next/router';
 
 const inter = Inter({ subsets: ['latin'] });
 
 export const Index = () => {
   const router = useRouter();
-  const { setAuthenticatedUser } = useAuthenticatedUserMutation();
+  const { setAuthenticatedUser } = useAuthenticatedUserMutator();
 
   const schema = useMemo(
     () =>

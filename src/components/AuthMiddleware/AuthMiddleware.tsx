@@ -1,5 +1,5 @@
 import { getCurrentAuthenticatedUser } from '@/features/auth';
-import { useAuthenticatedUserMutation } from '@/store/global/authenticatedUser';
+import { useAuthenticatedUserMutator } from '@/store/global/authenticatedUser';
 import { FC } from 'react';
 
 interface Props {
@@ -7,8 +7,7 @@ interface Props {
 }
 
 export const AuthMiddleware: FC<Props> = ({ children }) => {
-  const { setAuthenticatedUser, setIsInitialized } =
-    useAuthenticatedUserMutation();
+  const { setAuthenticatedUser } = useAuthenticatedUserMutator();
   getCurrentAuthenticatedUser().then((currentAuthenticatedUser) => {
     if (currentAuthenticatedUser) {
       const { email, emailVerified } = currentAuthenticatedUser.attributes;
@@ -19,7 +18,7 @@ export const AuthMiddleware: FC<Props> = ({ children }) => {
         emailVerified,
       });
     } else {
-      setIsInitialized(true);
+      setAuthenticatedUser((state) => ({ ...state, isInitialized: true }));
     }
   });
   return <>{children}</>;
