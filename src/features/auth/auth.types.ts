@@ -1,10 +1,10 @@
-export type SignUpFieldValues = {
+export type AuthFieldValues = {
   [x: string]: any;
 };
 
 export interface CognitoUserAttributes {
   email: string;
-  emailVerified: boolean;
+  email_verified: boolean;
 }
 
 export interface CognitoUser {

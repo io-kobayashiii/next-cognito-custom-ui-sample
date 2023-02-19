@@ -16,7 +16,7 @@ export const Private = () => {
       >
         <div className={`max-w-sm w-100p bg-white rounded-4 p-50 shadow-lg`}>
           <h2 className={`text-center text-24`}>
-            Profile of the signed in user
+            Profile of the Signed In User
           </h2>
           <div className={`mt-30`}>
             <dl className={`flex`}>

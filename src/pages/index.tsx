@@ -4,10 +4,11 @@ import { useMemo } from 'react';
 import * as Yup from 'yup';
 import { yupResolver } from '@hookform/resolvers/yup';
 import { SubmitHandler, useForm, FieldValues } from 'react-hook-form';
-import { Box, TextField, Button, Link } from '@mui/material';
+import { Box, TextField, Button } from '@mui/material';
 import * as Auth from '../features/auth';
 import { useAuthenticatedUserMutator } from '@/store/global/authenticatedUser';
 import { useRouter } from 'next/router';
+import Link from 'next/link';
 
 const inter = Inter({ subsets: ['latin'] });
 
@@ -40,8 +41,8 @@ export const Index = () => {
       setAuthenticatedUser({
         isInitialized: true,
         isAuthenticated: true,
-        email: user?.attributes?.email ?? '',
-        emailVerified: user?.attributes?.emailVerified ?? false,
+        email: user.attributes.email ?? '',
+        emailVerified: user.attributes.email_verified ?? false,
       });
       router.push('/private');
     } else {
@@ -94,6 +95,14 @@ export const Index = () => {
             >
               Sign In
             </Button>
+          </div>
+          <div className={`mt-15`}>
+            <p className={`text-14`}>
+              <span>パスワードを忘れた方は</span>
+              <Link href={`/forgot`} className={`ml-5 underline text-blue-400`}>
+                こちら
+              </Link>
+            </p>
           </div>
           <div className={`mt-30 flex items-center`}>
             <div className={`flex-grow border-t border-gray-300`}></div>
