@@ -2,42 +2,26 @@ import { Auth } from '@aws-amplify/auth';
 import * as Types from './auth.types';
 
 export const getCurrentAuthenticatedUser = async () => {
-  try {
-    const authenticatedUser: Types.CognitoUser =
-      await Auth.currentAuthenticatedUser();
-    return authenticatedUser;
-  } catch (error) {
-    console.log(error);
-    return null;
-  }
+  return await Auth.currentAuthenticatedUser().catch(console.log);
 };
 
-export const signUp = async ({ email, password }: Types.SignUpFieldValues) => {
-  try {
-    await Auth.signUp({
-      username: email,
-      password,
-    });
-  } catch (error) {
-    console.log(error);
-  }
+export const signUp = async ({ email, password }: Types.AuthFieldValues) => {
+  return await Auth.signUp({
+    username: email,
+    password,
+  }).catch(console.log);
 };
 
-export const verifyEmail = async ({ email, code }: Types.SignUpFieldValues) => {
-  try {
-    return await Auth.confirmSignUp(email, String(code));
-  } catch (error) {
-    console.log(error);
-  }
+export const verifyEmail = async ({ email, code }: Types.AuthFieldValues) => {
+  return await Auth.confirmSignUp(email, String(code)).catch(console.log);
 };
 
-export const signIn = async ({ email, password }: Types.SignUpFieldValues) => {
+export const signIn = async ({ email, password }: Types.AuthFieldValues) => {
   try {
     const user: Types.CognitoUser = await Auth.signIn({
       username: email,
       password,
     });
-    console.log(user);
     return user;
   } catch (error) {
     console.log(error);
@@ -45,14 +29,16 @@ export const signIn = async ({ email, password }: Types.SignUpFieldValues) => {
   }
 };
 
-export const requestPasswordReset = async ({
+export const requestPasswordReset = async (email: string) => {
+  return await Auth.forgotPassword(email).catch((error) => console.log(error));
+};
+
+export const resetPassword = async ({
   email,
-}: Types.SignUpFieldValues) => {
-  try {
-    await Auth.forgotPassword(email);
-  } catch (error) {
-    console.log(error);
-  }
+  code,
+  password,
+}: Types.AuthFieldValues) => {
+  return Auth.forgotPasswordSubmit(email, code, password);
 };
 
 export const signOut = async () => {

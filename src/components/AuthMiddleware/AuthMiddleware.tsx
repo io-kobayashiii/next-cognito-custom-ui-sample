@@ -10,12 +10,12 @@ export const AuthMiddleware: FC<Props> = ({ children }) => {
   const { setAuthenticatedUser } = useAuthenticatedUserMutator();
   getCurrentAuthenticatedUser().then((currentAuthenticatedUser) => {
     if (currentAuthenticatedUser) {
-      const { email, emailVerified } = currentAuthenticatedUser.attributes;
+      const { email, email_verified } = currentAuthenticatedUser.attributes;
       setAuthenticatedUser({
         isInitialized: true,
         isAuthenticated: true,
         email: email,
-        emailVerified,
+        emailVerified: email_verified,
       });
     } else {
       setAuthenticatedUser((state) => ({ ...state, isInitialized: true }));

@@ -19,7 +19,15 @@ export const SignUp = () => {
         email: Yup.string()
           .email('メールアドレスの形式が正しくありません')
           .required('この項目は必須です'),
-        password: Yup.string().required('この項目は必須です'),
+        password: Yup.string()
+          .required('この項目は必須です')
+          .matches(
+            /^(?=.*[a-z])(?=.*[A-Z])(?=.*[0-9])(?=.*[!"#$%&'\(\)\-=^~¥\|@`\[;+:*\]},<.>])[a-zA-Z0-9!"#$%&'\(\)\-=^~¥\|@`\[;+:*\]},<.>]{8,}$/,
+            {
+              message:
+                '小文字、大文字、数字、記号を含めた8文字以上で入力してください。',
+            }
+          ),
         passwordConfirmation: Yup.string()
           .required('この項目は必須です')
           .oneOf([Yup.ref('password')], 'パスワードが一致しません。'),
@@ -110,7 +118,7 @@ export const SignUp = () => {
                 type={'button'}
                 className={'w-100p bg-gray-600 hover:bg-gray-700'}
               >
-                Back To Top Page
+                Back To Sign In Page
               </Button>
             </Link>
           </div>
