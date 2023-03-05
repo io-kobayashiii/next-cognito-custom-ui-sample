@@ -1,3 +1,4 @@
+import { CognitoUser } from '@aws-amplify/auth';
 import { useCallback } from 'react';
 import { atom, useRecoilValue, useSetRecoilState } from 'recoil';
 
@@ -24,6 +25,37 @@ export const useAuthenticatedUserState = () => {
 
 export const useAuthenticatedUserMutator = () => {
   const setState = useSetRecoilState(authenticatedUserRecoilState);
-  const setAuthenticatedUser = useCallback(setState, [setState]);
+  const setAuthenticatedUser = useCallback(
+    async (cognitoUser: CognitoUser | undefined) => {
+      console.log('setAuthenticatedUser / cognitoUser:', cognitoUser);
+      if (!cognitoUser)
+        return setState((state) => ({
+          ...state,
+          isInitialized: true,
+          isAuthenticated: false,
+        }));
+
+      const attributes: { email: string; emailVerified: boolean } =
+        await new Promise((resolve) =>
+          cognitoUser.getUserAttributes((_, attributes) => {
+            console.log('getUserAttributes / attributes:', attributes);
+            const { email, email_verified } = Object.fromEntries(
+              attributes!.map(({ Name, Value }) => [Name, Value])
+            );
+            resolve({
+              email,
+              emailVerified: Boolean(email_verified),
+            });
+          })
+        );
+
+      setState({
+        isInitialized: true,
+        isAuthenticated: true,
+        ...attributes,
+      });
+    },
+    [setState]
+  );
   return { setAuthenticatedUser };
 };

@@ -1,15 +1,23 @@
-import { Auth } from '@aws-amplify/auth';
+import { Auth, CognitoUser } from '@aws-amplify/auth';
 import * as Types from './auth.types';
 
-export const getCurrentAuthenticatedUser = async () => {
-  return await Auth.currentAuthenticatedUser().catch(console.log);
+export const getCurrentAuthenticatedUser = async (): Promise<
+  CognitoUser | undefined
+> => {
+  return await Auth.currentAuthenticatedUser().catch((error) => {
+    console.log(error);
+    return undefined;
+  });
 };
 
 export const signUp = async ({ email, password }: Types.AuthFieldValues) => {
   return await Auth.signUp({
     username: email,
     password,
-  }).catch(console.log);
+  }).catch((error) => {
+    console.log(error);
+    return undefined;
+  });
 };
 
 export const verifyEmail = async ({ email, code }: Types.AuthFieldValues) => {
@@ -18,15 +26,28 @@ export const verifyEmail = async ({ email, code }: Types.AuthFieldValues) => {
 
 export const signIn = async ({ email, password }: Types.AuthFieldValues) => {
   try {
-    const user: Types.CognitoUser = await Auth.signIn({
+    const user: CognitoUser | undefined = await Auth.signIn({
       username: email,
       password,
     });
     return user;
   } catch (error) {
     console.log(error);
-    return null;
+    return undefined;
   }
+};
+
+export const resendSignUp = async (email: string) => {
+  return await Auth.resendSignUp(email).catch((error) => console.log(error));
+};
+
+export const completeNewPassword = async ({
+  user,
+  password,
+}: Types.AuthFieldValues) => {
+  return await Auth.completeNewPassword(user, password).catch((error) =>
+    console.log(error)
+  );
 };
 
 export const requestPasswordReset = async (email: string) => {
