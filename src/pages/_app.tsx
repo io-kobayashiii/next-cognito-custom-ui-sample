@@ -12,7 +12,7 @@ export default function App({ Component, pageProps }: AppProps) {
     <ThemeProvider theme={muiTheme}>
       <RecoilRoot>
         <AuthMiddleware>
-          <Component {...pageProps} />;
+          <Component {...pageProps} />
         </AuthMiddleware>
       </RecoilRoot>
     </ThemeProvider>

@@ -1,6 +1,7 @@
 import { getCurrentAuthenticatedUser } from '@/features/auth';
 import { useAuthenticatedUserMutator } from '@/store/global/authenticatedUser';
-import { FC } from 'react';
+import { CognitoUser } from '@aws-amplify/auth';
+import { FC, useEffect } from 'react';
 
 interface Props {
   children: React.ReactNode;
@@ -8,19 +9,13 @@ interface Props {
 
 export const AuthMiddleware: FC<Props> = ({ children }) => {
   const { setAuthenticatedUser } = useAuthenticatedUserMutator();
-  getCurrentAuthenticatedUser().then((currentAuthenticatedUser) => {
-    if (currentAuthenticatedUser) {
-      const { email, email_verified } = currentAuthenticatedUser.attributes;
-      setAuthenticatedUser({
-        isInitialized: true,
-        isAuthenticated: true,
-        email: email,
-        emailVerified: email_verified,
-      });
-    } else {
-      setAuthenticatedUser((state) => ({ ...state, isInitialized: true }));
-    }
-  });
+  useEffect(() => {
+    getCurrentAuthenticatedUser().then(
+      (cognitoUser: CognitoUser | undefined) => {
+        setAuthenticatedUser(cognitoUser);
+      }
+    );
+  }, [setAuthenticatedUser]);
   return <>{children}</>;
 };
 

@@ -1,20 +1,26 @@
 import Head from 'next/head';
 import { Inter } from '@next/font/google';
-import { useMemo } from 'react';
+import { useMemo, useState } from 'react';
 import * as Yup from 'yup';
 import { yupResolver } from '@hookform/resolvers/yup';
 import { SubmitHandler, useForm, FieldValues } from 'react-hook-form';
-import { Box, TextField, Button } from '@mui/material';
+import { Box, TextField, Button, Dialog, Fade } from '@mui/material';
 import * as Auth from '../features/auth';
 import { useAuthenticatedUserMutator } from '@/store/global/authenticatedUser';
 import { useRouter } from 'next/router';
 import Link from 'next/link';
+import { NewPasswordRequiredDialog } from '@/components/NewPasswordRequiredDialog';
+import { CognitoUser } from '@aws-amplify/auth';
 
 const inter = Inter({ subsets: ['latin'] });
 
 export const Index = () => {
   const router = useRouter();
   const { setAuthenticatedUser } = useAuthenticatedUserMutator();
+  const [isNewPasswordRequired, setIsNewPasswordRequired] = useState(false);
+  const [cognitoUser, setCognitoUser] = useState<CognitoUser | undefined>(
+    undefined
+  );
 
   const schema = useMemo(
     () =>
@@ -36,18 +42,22 @@ export const Index = () => {
   });
 
   const onSignInButtonClick: SubmitHandler<FieldValues> = async (formInput) => {
+    console.log('onSignInButtonClick');
     const user = await Auth.signIn(formInput);
-    if (user) {
-      setAuthenticatedUser({
-        isInitialized: true,
-        isAuthenticated: true,
-        email: user.attributes.email ?? '',
-        emailVerified: user.attributes.email_verified ?? false,
-      });
-      router.push('/private');
-    } else {
+    setCognitoUser(user);
+
+    if (!user) {
       alert('Email or password is incorrect.');
+      return;
     }
+
+    if (user.challengeName !== 'NEW_PASSWORD_REQUIRED') {
+      await setAuthenticatedUser(user);
+      router.push('/private');
+      return;
+    }
+
+    setIsNewPasswordRequired(true);
   };
 
   return (
@@ -121,6 +131,9 @@ export const Index = () => {
             </Link>
           </div>
         </div>
+        <NewPasswordRequiredDialog
+          {...{ cognitoUser, isNewPasswordRequired }}
+        />
       </main>
     </>
   );
